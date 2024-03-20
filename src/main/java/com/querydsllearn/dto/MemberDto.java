@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor // 필수
+@NoArgsConstructor
 public class MemberDto {
     private String username;
     private int age;

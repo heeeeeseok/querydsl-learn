@@ -7,10 +7,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserDto {
     private String name;
-    private int age;
+    private int userAge;
 
-    public UserDto(String name, int age) {
+    public UserDto(String name, int userAge) {
         this.name = name;
-        this.age = age;
+        this.userAge = userAge;
     }
 }

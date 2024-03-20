@@ -1,15 +1,13 @@
-package com.querydsllearn;
+package com.querydsllearn.entity;
 
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.querydsllearn.dto.MemberDto;
 import com.querydsllearn.dto.QMemberDto;
-import com.querydsllearn.dto.QMemberTeamDto;
 import com.querydsllearn.dto.UserDto;
-import com.querydsllearn.entity.Member;
-import com.querydsllearn.entity.QMember;
-import com.querydsllearn.entity.Team;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -92,7 +90,7 @@ public class MemberTeamDtoTest {
     @Test
     void findDtoByConstructor() {
         List<MemberDto> result = queryFactory
-                .select(Projections.constructor(MemberDto.class, // setter, 기본 생성자 필요
+                .select(Projections.constructor(MemberDto.class,
                         member.username,
                         member.age))
                 .from(member)
@@ -103,12 +101,21 @@ public class MemberTeamDtoTest {
         }
     }
 
+    /**
+     * 엔티티의 필드명과 DTO의 필드명이 다를 때 as 활용 가능
+     * username -> name
+     * age -> uesrAge
+     *
+     * ExpressionUtils와 JPAExpressions를 활용하여 서브쿼리도 작성 가능
+     */
     @Test
     void findUserDtoByField() {
         List<UserDto> result = queryFactory
                 .select(Projections.fields(UserDto.class, // setter, 기본 생성자 필요
-                        member.username.as("name"),
-                        member.age))
+                        member.username.as("name"), // ExpressionUtils.as(member.username, "name"),도 가능
+                        ExpressionUtils.as(JPAExpressions
+                                .select(member.age.gt(20)), "userAge")
+                ))
                 .from(member)
                 .fetch();
 
@@ -117,6 +124,12 @@ public class MemberTeamDtoTest {
         }
     }
 
+    /**
+     * @QueryProjection을 사용하는 방법은 컴파일 시점에 문법 오류를 파악할 수 있다는 장점이 있다.
+     *
+     * 하지만, DTO클래스에 @QueryProjection 애너테이션이 필요하고
+     * 이것은 DTO클래스가 Querydsl에 의존성을 가지게 되므로 적용을 고려할 필요가 있음
+     */
     @Test
     void findDtoByQueryProjection() {
         List<MemberDto> result = queryFactory

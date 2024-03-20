@@ -1,7 +1,6 @@
-package com.querydsllearn.membertest;
+package com.querydsllearn.entity;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.querydsllearn.entity.Member;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
